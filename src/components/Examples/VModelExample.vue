@@ -1,35 +1,28 @@
 <template>
-    <div class="v-model-example">
+    <div
+        class="v-model-example"
+    >
         <div>
             <input
                 type="text"
-                v-model="inputValue"
+                :value="value"
+                @input="onInput"
                 class="native-input"
             />
         </div>
-        <div class="mt-5">
-            <v-text-field
-                v-model="inputValue"
-                label="VModelValue"
-                outlined
-                dense
-            />
+        <div>
+            Fetched collection: {{collection}}
         </div>
         <div>
             <v-select
-                v-model="selectedItem"
+                :value="selectedItem"
+                outlined
+                dense
                 :items="selectItems"
                 item-text="title"
                 item-value="id"
+                @change="onChange"
             />
-        </div>
-        <div>
-            <div>
-                InputValue: {{ inputValue }}
-            </div>
-            <div>
-                selectedItem: {{ selectedItem }}
-            </div>
         </div>
     </div>
 </template>
@@ -38,10 +31,18 @@
 
 export default {
     name: 'VModelExample',
+    props: {
+        value: {
+            type: [String, Number]
+        },
+        selectedItem: {
+            type: [String, Number]
+        },
+    },
     data() {
         return {
-            inputValue: '',
-            selectedItem: null,
+            loading: false,
+            collection: null,
             selectItems: [
                 {
                     title: "Item 1",
@@ -54,7 +55,34 @@ export default {
             ]
         }
     },
+    created() {
+        this.fetchData()
+    },
+    mounted() {
+        this.fetchData()
+    },
+    updated() {
+        this.$nextTick(() => {
+            console.log('updated')
+        })
+    },
+    destroyed() {
+        console.log('destroyed')
+    },
     methods: {
+        fetchData() {
+            setTimeout(async () => {
+                this.collection = 123
+            }, 1000)
+        },
+        onInput(e) {
+            const value = e.target.value
+
+            this.$emit('input', value)
+        },
+        onChange(value) {
+            this.$emit('update:selectedItem', value)
+        },
         vBindSelect() {
             return {
                 items: this.selectedItem,

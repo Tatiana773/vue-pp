@@ -2,7 +2,18 @@
     <v-app>
         <v-main>
             <v-container>
-                <v-model-example/>
+                <div>
+                    <v-model-example
+                        v-model="inputValue"
+                        :selected-item.sync="selectedItem"
+                    />
+                </div>
+                <div>
+                    inputValue: {{inputValue}}
+                </div>
+                <div>
+                    selectedItem: {{ selectedItem }}
+                </div>
             </v-container>
         </v-main>
     </v-app>
@@ -18,8 +29,13 @@ export default {
     components: { VModelExample },
 
     data: () => ({
-        //
-    })
+        newsItem: {},
+        inputValue: '',
+        selectedItem: null
+    }),
+
+    methods: {
+    }
 }
 </script>
 
