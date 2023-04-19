@@ -14,19 +14,24 @@
                 <div>
                     selectedItem: {{ selectedItem }}
                 </div>
+                <div>
+                    <add-item/>
+                </div>
             </v-container>
         </v-main>
+        
     </v-app>
 </template>
 
 <script>
 
 import VModelExample from '@/components/Examples/VModelExample.vue'
+import AddItem from '@/components/AddItem/AddItem.vue'
 
 export default {
     name: 'App',
 
-    components: { VModelExample },
+    components: { VModelExample, AddItem }, 
 
     data: () => ({
         newsItem: {},
