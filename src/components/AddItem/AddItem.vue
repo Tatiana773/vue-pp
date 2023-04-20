@@ -79,8 +79,6 @@ export default {
     name: 'AddItem',
     computed: {
         buttonText() {
-            console.log('buttonText')
-
             const isCreating = Object.keys(this.newsItem).length === 0
 
             return isCreating
@@ -89,7 +87,7 @@ export default {
         },
         inputBindings() {
             return {
-                outlined: false,
+                outlined: true,
                 dense: true
             }
         }

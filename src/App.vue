@@ -1,49 +1,37 @@
 <template>
+  <div id="app">
     <v-app>
-        <v-main>
-            <v-container>
-                <div>
-                    <v-model-example
-                        v-model="inputValue"
-                        :selected-item.sync="selectedItem"
-                    />
-                </div>
-                <div>
-                    inputValue: {{inputValue}}
-                </div>
-                <div>
-                    selectedItem: {{ selectedItem }}
-                </div>
-                <div>
-                    <add-item/>
-                </div>
-            </v-container>
-        </v-main>
-        
+        <v-container>
+            <nav>
+                <router-link to="/">Home</router-link> |
+                <router-link to="/add-item">Add item</router-link> |
+                <router-link to="/slots">Slots</router-link>
+            </nav>
+            <router-view/>
+        </v-container>
     </v-app>
+  </div>
 </template>
 
-<script>
-
-import VModelExample from '@/components/Examples/VModelExample.vue'
-import AddItem from '@/components/AddItem/AddItem.vue'
-
-export default {
-    name: 'App',
-
-    components: { VModelExample, AddItem }, 
-
-    data: () => ({
-        newsItem: {},
-        inputValue: '',
-        selectedItem: null
-    }),
-
-    methods: {
-    }
+<style lang="scss">
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  // text-align: center;
+  color: #2c3e50;
 }
-</script>
 
-<style>
+nav {
+  padding: 30px;
 
+  a {
+    font-weight: bold;
+    color: #2c3e50;
+
+    &.router-link-exact-active {
+      color: #42b983;
+    }
+  }
+}
 </style>
