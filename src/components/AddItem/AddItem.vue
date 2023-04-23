@@ -69,14 +69,20 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <ItemsTable/>
     </v-row>
+    
 </template>
 
 <script>
+import ItemsTable from '../Table/Table.vue';
 const requiredField = v => !!v && !!v.length || 'This field is required'
 
 export default {
     name: 'AddItem',
+    components: {
+        ItemsTable,
+    },
     computed: {
         buttonText() {
             const isCreating = Object.keys(this.newsItem).length === 0
