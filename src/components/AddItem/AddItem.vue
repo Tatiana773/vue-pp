@@ -2,7 +2,6 @@
     <div>
         <v-row justify="center">
             <v-col cols="12">
-                <v-btn @click="onEdit">Edit</v-btn>
                 <v-btn
                     color="success"
                     dark
@@ -13,11 +12,13 @@
                 </v-btn>
             </v-col>
             <v-col cols="12">
-                <v-data-table
+                <w-data-table
                     :headers="headers"
                     :items="computedItems"
+                    :search-by="['title', 'catTitle']"
                     mobile-breakpoint="0"
                 >
+
                     <template #item.actions="{item}">
                         <div
                             v-if="!isMobile"
@@ -68,11 +69,8 @@
                             </v-menu>
                         </div>
                     </template>
-                </v-data-table>
+                </w-data-table>
             </v-col>
-
-
-
         </v-row>
         <v-dialog
             v-model="dialog"
@@ -139,12 +137,13 @@
 <script>
 import {getItemsCategoriesCollection, getItemsCollection} from '@/api/items'
 import breakpointChecker from '@/mixins/breakpointChecker'
+import WDataTable from '@/Widgets/WDataTable'
 
 const requiredField = v => !!v && !!v.length || 'This field is required'
 
 export default {
     name: 'AddItem',
-    components: {},
+    components: { WDataTable },
     mixins: [
         breakpointChecker
     ],
