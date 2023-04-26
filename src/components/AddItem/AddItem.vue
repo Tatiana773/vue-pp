@@ -13,7 +13,14 @@
                 </v-btn>
             </v-col>
             <v-col cols="12">
-                <v-data-table
+                <data-table
+                :headers = "headers"
+                :computedItems = "computedItems"
+                @onEdit="onEdit"
+                @onDelete="onDelete"
+                :isMobile="isMobile"
+                />
+                <!-- <v-data-table
                     :headers="headers"
                     :items="computedItems"
                     mobile-breakpoint="0"
@@ -56,9 +63,16 @@
                                     <v-list-item
                                         v-for="(action, index) in itemActions(item)"
                                         :key="index"
+                                        :color="action.color"
+                                        @click="action.callback"
+                                        
                                     >
                                         <v-list-item-icon>
-                                            <v-icon>{{action.icon}}</v-icon>
+                                            <v-icon 
+                                            :color="action.color"
+                                            >
+                                            {{action.icon}}
+                                        </v-icon>
                                         </v-list-item-icon>
                                         <v-list-item-title>
                                             {{ action.text }}
@@ -68,11 +82,8 @@
                             </v-menu>
                         </div>
                     </template>
-                </v-data-table>
+                </v-data-table> -->
             </v-col>
-
-
-
         </v-row>
         <v-dialog
             v-model="dialog"
@@ -133,18 +144,18 @@
             </v-card>
         </v-dialog>
     </div>
-
 </template>
 
 <script>
 import {getItemsCategoriesCollection, getItemsCollection} from '@/api/items'
 import breakpointChecker from '@/mixins/breakpointChecker'
+import DataTable from '@/components/DataTable/DataTable.vue'
 
 const requiredField = v => !!v && !!v.length || 'This field is required'
 
 export default {
     name: 'AddItem',
-    components: {},
+    components: {DataTable},
     mixins: [
         breakpointChecker
     ],
@@ -241,26 +252,26 @@ export default {
 
             return !category ? 'Unknown' : category.title
         },
-        itemActions(item) {
-            return [
-                {
-                    text: 'Edit',
-                    icon: 'mdi-pencil',
-                    color: 'success',
-                    callback: () => {
-                        this.onEdit(item)
-                    }
-                },
-                {
-                    text: 'Delete',
-                    icon: 'mdi-delete',
-                    color: 'error',
-                    callback: () => {
-                        console.log('Delete.item', item)
-                    }
-                }
-            ]
-        },
+        // itemActions(item) {
+        //     return [
+        //         {
+        //             text: 'Edit',
+        //             icon: 'mdi-pencil',
+        //             color: 'success',
+        //             callback: () => {
+        //                 this.onEdit(item)
+        //             }
+        //         },
+        //         {
+        //             text: 'Delete',
+        //             icon: 'mdi-delete',
+        //             color: 'error',
+        //             callback: () => {
+        //                 this.onDelete(item.id)
+        //             }
+        //         }
+        //     ]
+        // },
         onEdit(item) {
             this.newsItem = Object.assign({}, item)
             this.dialog = true
@@ -274,12 +285,13 @@ export default {
                 return
             }
 
-            this.news.push(this.newsItem)
+            this.itemsCollection.push(this.newsItem)
 
             console.log('this.news', this.news)
-        }
-
-
+        },
+        onDelete(id) {
+            this.itemsCollection = this.itemsCollection.filter((i) => i.id !== id)
+        },
     }
 }
 </script>
