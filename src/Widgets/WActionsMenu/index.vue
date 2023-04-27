@@ -1,11 +1,11 @@
 <template>
     <div>
         <div
-            v-if="!mobile"
+            v-if="inline"
             class="d-flex justify-end"
         >
             <v-btn
-                v-for="(action, index) in itemActions(item)"
+                v-for="(action, index) in items"
                 :key="index"
                 icon
                 :color="action.color"
@@ -22,20 +22,25 @@
             class="d-flex justify-end"
         >
             <v-menu offset-y>
-                <template #activator="{ on, attrs }">
-                    <v-btn
-                        icon
-                        v-bind="attrs"
-                        v-on="on"
+                <template #activator="props">
+                    <slot
+                        name="activator"
+                        v-bind="props"
                     >
-                        <v-icon>
-                            mdi-dots-vertical
-                        </v-icon>
-                    </v-btn>
+                        <v-btn
+                            icon
+                            v-bind="props.attrs"
+                            v-on="props.on"
+                        >
+                            <v-icon>
+                                {{ icon }}
+                            </v-icon>
+                        </v-btn>
+                    </slot>
                 </template>
                 <v-list>
                     <v-list-item
-                        v-for="(action, index) in itemActions(item)"
+                        v-for="(action, index) in items"
                         :key="index"
                         @click="action.callback"
                     >
@@ -55,17 +60,20 @@
     </div>
 </template>
 <script>
+
     export default{
-        name: 'WActionList',
+        name: 'WActionsMenu',
         props: {
-            item: {
-                type: Object,
+            icon: {
+                type: String,
+                default: 'mdi-dots-vertical'
             },
-            mobile: {
+            inline: {
                 type: Boolean,
+                default: false
             },
-            itemActions: {
-                type: Function,
+            items: {
+                type: [],
             }
         }
     }

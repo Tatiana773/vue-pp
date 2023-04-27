@@ -9,6 +9,10 @@
             :headers="headers"
             :items="computedItems"
             :mobile-breakpoint="mobileBreakpoint"
+            :footer-props="computedFooterProps"
+            :options.sync="localOptions"
+            :server-items-length="serverItemsLength"
+            :items-per-page="itemsPerPage"
         >
             <template
                 v-for="headerItem in headers"
@@ -42,14 +46,38 @@ export default {
             type: [String, Number],
             default: 600
         },
+        footerProps: {
+            type: Object,
+            default: undefined
+        },
         searchBy: {
             type: Array,
             default: function() {
                 return []
             }
+        },
+        options: {
+            type: Object,
+            default: undefined
+        },
+        serverItemsLength: {
+            type: Number,
+            default: undefined
+        },
+        itemsPerPage: {
+            type: Number,
+            default: 10
         }
     },
     computed: {
+        computedFooterProps() {
+            const defaultProps = {
+                itemsPerPageOptions: [ 25, 50, 100, -1 ]
+
+            }
+
+            return Object.assign(defaultProps, this.footerProps)
+        },
         computedItems() {
             if(!this.search) {
                 return this.items
@@ -70,9 +98,15 @@ export default {
             })
         }
     },
+    watch: {
+        localOptions(options) {
+            this.$emit('update:options', options)
+        }
+    },
     data() {
         return {
-            search: ''
+            search: '',
+            localOptions: null
         }
     }
 }

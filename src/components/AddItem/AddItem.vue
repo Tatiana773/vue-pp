@@ -17,12 +17,16 @@
                     :items="computedItems"
                     :search-by="['title', 'catTitle']"
                     mobile-breakpoint="0"
+                    :footer-props="{itemsPerPageOptions: [5,10]}"
+                    :options.sync="options"
+                    :server-items-length="serverItemsLength"
+                    :items-per-page="itemsPerPage"
+
                 >
                     <template #item.actions="{item}">
-                        <w-action-list
-                            :item="item"
-                            :mobile="isMobile"
-                            :itemActions="itemActions"
+                        <w-actions-menu
+                            :inline="!isMobile"
+                            :items="itemActions(item)"
                     />
                     </template>
                 </w-data-table>
@@ -94,13 +98,13 @@
 import {getItemsCategoriesCollection, getItemsCollection} from '@/api/items'
 import breakpointChecker from '@/mixins/breakpointChecker'
 import WDataTable from '@/Widgets/WDataTable'
-import WActionList from '@/Widgets/WActionList'
+import WActionsMenu from '@/Widgets/WActionsMenu'
 
 const requiredField = v => !!v && !!v.length || 'This field is required'
 
 export default {
     name: 'AddItem',
-    components: { WDataTable, WActionList },
+    components: { WDataTable, WActionsMenu },
     mixins: [
         breakpointChecker
     ],
@@ -159,6 +163,9 @@ export default {
             if(!flag) {
                 this.onBack()
             }
+        },
+        options() {
+            this.fetchItemsCollection()
         }
     },
     data() {
@@ -168,12 +175,17 @@ export default {
             itemsCollection: [],
             newsItem: {},
             isValid: true,
-            rules: [requiredField]
+            rules: [requiredField],
+            itemsPerPage: 5,
+            options: {
+                itemsPerPage: 5
+            },
+            serverItemsLength: undefined
         }
     },
     async mounted() {
         await this.fetchItemsCategoryCollection()
-        await this.fetchItemsCollection()
+        // await this.fetchItemsCollection()
     },
     methods: {
         async fetchItemsCategoryCollection() {
@@ -185,8 +197,17 @@ export default {
             }
         },
         async fetchItemsCollection() {
+            const options = this.options
+            let params = {
+                perPage: options.itemsPerPage,
+                page: options.page
+            }
+
+            console.log(options)
+
             try {
-                const response = await getItemsCollection()
+                const response = await getItemsCollection(params)
+                this.serverItemsLength = response.total
                 this.itemsCollection = response.data
             } catch (e) {
                 console.log(e)
