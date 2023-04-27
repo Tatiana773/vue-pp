@@ -18,56 +18,12 @@
                     :search-by="['title', 'catTitle']"
                     mobile-breakpoint="0"
                 >
-
                     <template #item.actions="{item}">
-                        <div
-                            v-if="!isMobile"
-                            class="d-flex justify-end"
-                        >
-                            <v-btn
-                                v-for="(action, index) in itemActions(item)"
-                                :key="index"
-                                icon
-                                :color="action.color"
-                                @click="action.callback"
-                            >
-                                <v-icon
-                                >
-                                    {{action.icon}}
-                                </v-icon>
-                            </v-btn>
-                        </div>
-                        <div
-                            v-else
-                            class="d-flex justify-end"
-                        >
-                            <v-menu offset-y>
-                                <template #activator="{ on, attrs }">
-                                    <v-btn
-                                        icon
-                                        v-bind="attrs"
-                                        v-on="on"
-                                    >
-                                        <v-icon>
-                                            mdi-dots-vertical
-                                        </v-icon>
-                                    </v-btn>
-                                </template>
-                                <v-list>
-                                    <v-list-item
-                                        v-for="(action, index) in itemActions(item)"
-                                        :key="index"
-                                    >
-                                        <v-list-item-icon>
-                                            <v-icon>{{action.icon}}</v-icon>
-                                        </v-list-item-icon>
-                                        <v-list-item-title>
-                                            {{ action.text }}
-                                        </v-list-item-title>
-                                    </v-list-item>
-                                </v-list>
-                            </v-menu>
-                        </div>
+                        <w-action-list
+                            :item="item"
+                            :mobile="isMobile"
+                            :itemActions="itemActions"
+                    />
                     </template>
                 </w-data-table>
             </v-col>
@@ -138,12 +94,13 @@
 import {getItemsCategoriesCollection, getItemsCollection} from '@/api/items'
 import breakpointChecker from '@/mixins/breakpointChecker'
 import WDataTable from '@/Widgets/WDataTable'
+import WActionList from '@/Widgets/WActionList'
 
 const requiredField = v => !!v && !!v.length || 'This field is required'
 
 export default {
     name: 'AddItem',
-    components: { WDataTable },
+    components: { WDataTable, WActionList },
     mixins: [
         breakpointChecker
     ],
@@ -255,7 +212,7 @@ export default {
                     icon: 'mdi-delete',
                     color: 'error',
                     callback: () => {
-                        console.log('Delete.item', item)
+                        this.onDelete(item.id)
                     }
                 }
             ]
@@ -273,11 +230,13 @@ export default {
                 return
             }
 
-            this.news.push(this.newsItem)
+            this.itemsCollection.push(this.newsItem)
 
             console.log('this.news', this.news)
+        },
+        onDelete(id){
+            this.itemsCollection = this.itemsCollection.filter((item)=>item.id !== id)
         }
-
 
     }
 }
